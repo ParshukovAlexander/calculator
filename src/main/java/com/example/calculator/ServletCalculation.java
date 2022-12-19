@@ -21,7 +21,7 @@ public class ServletCalculation extends HttpServlet {
         StringBuffer jb = new StringBuffer();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        response.setContentType("text/html;charset=utf-8");
+        response.setContentType("application/json;charset=utf-8");
         PrintWriter pw =response.getWriter();
 
         String line;
@@ -41,24 +41,25 @@ public class ServletCalculation extends HttpServlet {
         JsonObject jobj=gson.fromJson(String.valueOf(jb),JsonObject.class);
 
         request.setCharacterEncoding("UTF-8");
-
+        String result ;
         try {
 
             double a = Double.parseDouble(jobj.get("a").getAsString());
             double b = Double.parseDouble(jobj.get("b").getAsString());
             String math = jobj.get("math").getAsString();
 
-            pw.println(result(a, b, math));
+            result = result(a, b, math);
         }catch (NumberFormatException e){
-            pw.println("Некорректные данные");
+            result="Некорректные данные";
         }
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("result", "foo");
+            obj.put("result", result);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+        pw.println(obj);
     }
 
     private String result(double a, double b, String math) {
